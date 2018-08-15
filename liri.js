@@ -66,27 +66,30 @@ function displaySong(song) {
       // console.log(Object.keys(songData[0]));
 
       spotData.forEach(function(track) {
-        if (track.name === song) {
-          console.log('Song: ' + track.name);
-          console.log('Album: ' + track.album.name);
-          console.log('Preview: ' + track.preview_url);
-          var artists = track.artists;
-          var artistNames = '';
-          artists.forEach(function(artist) {
-            if (artistNames.length < 1 || artists.length == 1) {
-              artistNames = artistNames + artist.name;
-            } else {
-              artistNames = artisNames + ', ' + artist.name;
-            }
-          });
-
-          console.log(artistNames);
-        }
+        logSongData(track, song);
       });
     })
     .catch(function(err) {
       console.log(err);
     });
+}
+function logSongData(track, song) {
+  if (track.name === song) {
+    console.log('Song: ' + track.name);
+    console.log('Album: ' + track.album.name);
+    console.log('Preview: ' + track.preview_url);
+    var artists = track.artists;
+    var artistNames = '';
+    artists.forEach(function(artist) {
+      if (artistNames.length < 1 || artists.length == 1) {
+        artistNames = artistNames + artist.name;
+      } else {
+        artistNames = artisNames + ', ' + artist.name;
+      }
+    });
+
+    console.log(artistNames);
+  }
 }
 
 function displayMovie(movie) {}
