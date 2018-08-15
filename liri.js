@@ -5,8 +5,6 @@ var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require('request');
 
-var spotify = new Spotify(keys.spotify);
-
 main();
 
 function main() {
@@ -15,7 +13,7 @@ function main() {
 
   switch (command) {
     case 'my-tweets':
-      displayTweets('rmoj99', 20);
+      displayTweets('rmoj99');
       break;
 
     case 'spotify-this-song':
@@ -48,7 +46,7 @@ function displayTweets(username) {
       tweets.forEach(function(tweet) {
         console.log(' ');
         console.log('Created: ' + tweet.created_at);
-        console.log(tweet.text);
+        console.log('Tweet: ' + tweet.text);
       });
     } else {
       console.log(error);
@@ -56,7 +54,40 @@ function displayTweets(username) {
   });
 }
 
-function displaySong(song) {}
+function displaySong(song) {
+  var spotify = new Spotify(keys.spotify);
+
+  spotify
+    .search({ type: 'track', query: song })
+    .then(function(response) {
+      // console.log(JSON.stringify(response, null, 4));
+
+      var spotData = response.tracks.items;
+      // console.log(Object.keys(songData[0]));
+
+      spotData.forEach(function(track) {
+        if (track.name === song) {
+          console.log('Song: ' + track.name);
+          console.log('Album: ' + track.album.name);
+          console.log('Preview: ' + track.preview_url);
+          var artists = track.artists;
+          var artistNames = '';
+          artists.forEach(function(artist) {
+            if (artistNames.length < 1 || artists.length == 1) {
+              artistNames = artistNames + artist.name;
+            } else {
+              artistNames = artisNames + ', ' + artist.name;
+            }
+          });
+
+          console.log(artistNames);
+        }
+      });
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
+}
 
 function displayMovie(movie) {}
 
