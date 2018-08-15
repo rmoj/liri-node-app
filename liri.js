@@ -15,7 +15,7 @@ function main() {
 
   switch (command) {
     case 'my-tweets':
-      displayTweets('rmoj99');
+      displayTweets('rmoj99', 20);
       break;
 
     case 'spotify-this-song':
@@ -46,6 +46,7 @@ function displayTweets(username) {
   ) {
     if (!error) {
       tweets.forEach(function(tweet) {
+        console.log(' ');
         console.log('Created: ' + tweet.created_at);
         console.log(tweet.text);
       });
