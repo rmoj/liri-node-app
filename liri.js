@@ -12,7 +12,26 @@ function main() {
   var command = process.argv[2];
   var item = process.argv[3];
 
-  executeCommand(command, item);
+  if (command === 'do-what-it-says') {
+    getCommandOnFile('random.txt');
+  } else {
+    executeCommand(command, item);
+  }
+}
+
+function getCommandOnFile(file) {
+  fs.readFile(file, 'utf8', function(error, data) {
+    if (error) {
+      return console.log(error + '\n');
+    }
+
+    var cmd = data.split(',');
+    if (cmd[1]) {
+      cmd[1] = cmd[1].toString().replace(/"/g, '');
+    }
+
+    executeCommand(cmd[0], cmd[1]);
+  });
 }
 
 function displayTweets(username) {
@@ -46,11 +65,11 @@ function displaySong(song) {
   spotify
     .search({ type: 'track', query: song })
     .then(function(response) {
-      var items = response.tracks.items;
+      var tracks = response.tracks.items;
 
-      items.forEach(function(item) {
-        if (item.name.toLowerCase() === song.toLowerCase()) {
-          logSongData(item);
+      tracks.forEach(function(track) {
+        if (track.name.toLowerCase() === song.toLowerCase()) {
+          logSongData(track);
         }
       });
       console.log('\n');
@@ -97,18 +116,4 @@ function executeCommand(command, item) {
       console.log('Unrecognized command.\n');
       break;
   }
-}
-
-function getCommandOnFile() {
-  fs.readFile('random.txt', 'utf8', function(error, data) {
-    if (error) {
-      return console.log(error + '\n');
-    }
-
-    console.log(data);
-
-    var arr = data.trim().split(',');
-
-    return arr;
-  });
 }
