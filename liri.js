@@ -4,7 +4,6 @@ var keys = require('./keys.js');
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require('request');
-var fs = require('fs');
 
 main();
 
@@ -13,13 +12,14 @@ function main() {
   var item = process.argv[3];
 
   if (command === 'do-what-it-says') {
-    getCommandOnFile('random.txt');
+    getCommand('random.txt');
   } else {
     executeCommand(command, item);
   }
 }
 
-function getCommandOnFile(file) {
+function getCommand(file) {
+  var fs = require('fs');
   fs.readFile(file, 'utf8', function(error, data) {
     if (error) {
       return console.log(error + '\n');
@@ -27,7 +27,10 @@ function getCommandOnFile(file) {
 
     var cmd = data.split(',');
     if (cmd[1]) {
-      cmd[1] = cmd[1].toString().replace(/"/g, '');
+      cmd[1] = cmd[1]
+        .toString()
+        .replace(/"/g, '')
+        .trim();
     }
 
     executeCommand(cmd[0], cmd[1]);
@@ -54,7 +57,7 @@ function displayTweets(username) {
   });
 }
 
-function displaySong(song) {
+function getSong(song) {
   var spotify = new Spotify(keys.spotify);
 
   if (!song) {
@@ -69,7 +72,7 @@ function displaySong(song) {
 
       tracks.forEach(function(track) {
         if (track.name.toLowerCase() === song.toLowerCase()) {
-          logSongData(track);
+          displaySong(track);
         }
       });
       console.log('\n');
@@ -79,7 +82,7 @@ function displaySong(song) {
     });
 }
 
-function logSongData(track) {
+function displaySong(track) {
   var artists = track.artists;
   var artistNames = '';
 
@@ -96,7 +99,29 @@ function logSongData(track) {
   console.log('Album: ' + track.album.name);
 }
 
-function displayMovie(movie) {}
+function getMovie(movie) {
+  var request = require('request');
+
+  var queryURL = 'http://www.omdbapi.com/?apikey=trilogy&t=' + movie;
+
+  request(queryURL, function(error, response, body) {
+    console.log('error:', error);
+    console.log('statusCode:', response && response.statusCode);
+    console.log(body);
+    console.log('body:' + JSON.stringify(JSON.parse(body), null, 2));
+    displayMovie(JSON.parse(body));
+  });
+}
+
+function displayMovie(movie) {
+  console.log('\nTitle: ' + movie.Title);
+  console.log('Year: ' + movie.Year);
+  console.log('IMDB Rating: ' + movie.imdbRating);
+  console.log('Rotten Tomatoes Rating: ' + movie.Ratings[1].Value);
+  console.log('Language: ' + movie.Language);
+  console.log('Plot: ' + movie.Plot);
+  console.log('Actors: ' + movie.Actors + '\n');
+}
 
 function executeCommand(command, item) {
   switch (command) {
@@ -105,11 +130,11 @@ function executeCommand(command, item) {
       break;
 
     case 'spotify-this-song':
-      displaySong(item);
+      getSong(item);
       break;
 
     case 'movie-this':
-      displayMovie(item);
+      getMovie(item);
       break;
 
     default:
