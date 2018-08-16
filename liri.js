@@ -138,6 +138,7 @@ function displayMovie(movie) {
   console.log('\nTitle: ' + movie.Title);
   console.log('Year: ' + movie.Year);
   console.log('IMDB Rating: ' + movie.imdbRating);
+
   if (movie.Ratings[1]) {
     console.log('Rotten Tomatoes Rating: ' + movie.Ratings[1].Value);
   } else {
