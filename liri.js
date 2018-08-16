@@ -112,6 +112,7 @@ function displaySong(track) {
       artistNames = artistNames + ', ' + artist.name;
     }
   });
+
   console.log('\nArtist(s): ' + artistNames);
   console.log('Song: ' + track.name);
   console.log('Preview: ' + track.preview_url);
