@@ -12,6 +12,10 @@ function main() {
   var command = process.argv[2];
   var item = process.argv[3];
 
+  console.log('\n==============');
+  console.log('LIRI Bot v 1.0');
+  console.log('==============');
+
   if (command === 'do-what-it-says') {
     getCommand('random.txt');
   } else {

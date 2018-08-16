@@ -6,16 +6,16 @@ LIRI Bot allows you to display data from Twitter, Spotify, and OMDB right from t
 
 In the console, user type any of the following commands shwon below:
 
-`node liri.js my-tweets`
-`node liri.js spotify-this-song <song name>`
-`node liri.js movie-this <movie name>`
-`node liri.js do-what-it-says`
+- node liri.js my-tweets
+- node liri.js spotify-this-song {song name}
+- node liri.js movie-this {movie name}
+- node liri.js do-what-it-says
 
 "my-tweets" shows user's last 20 tweets and when they were created.
 
-"spotify-this-song" shows song information from Spotify which includes Artist(s), a preview link, and the album the song is from.
+"spotify-this-song" shows song information from Spotify which includes Artist(s), a preview link, and the album the song is from. If no song is provided then your program will default to "The Sign" by Ace of Base.
 
-"movie-this" shows movie information from the OMDB which includes the year the movie came out, IMDB rating, Rotten Tomatoes rating, country where movie was produced, language, plot, and actors.
+"movie-this" shows movie information from the OMDB which includes the year the movie came out, IMDB rating, Rotten Tomatoes rating, country where movie was produced, language, plot, and actors. If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
 
 "do-what-it-says" runs a command stored in a text file.
 
