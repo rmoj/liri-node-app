@@ -99,16 +99,16 @@ function executeCommand(command, item) {
   }
 }
 
-function doCommandOnFile() {
+function getCommandOnFile() {
   fs.readFile('random.txt', 'utf8', function(error, data) {
     if (error) {
-      return console.log(error);
+      return console.log(error + '\n');
     }
 
     console.log(data);
 
-    var arr = data.split(',');
+    var arr = data.trim().split(',');
 
-    console.log(dataArr);
+    return arr;
   });
 }
