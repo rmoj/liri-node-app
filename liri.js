@@ -4,6 +4,7 @@ var keys = require('./keys.js');
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require('request');
+var fs = require('fs');
 
 main();
 
@@ -19,7 +20,6 @@ function main() {
 }
 
 function getCommand(file) {
-  var fs = require('fs');
   fs.readFile(file, 'utf8', function(error, data) {
     if (error) {
       return console.log(error + '\n');
@@ -35,6 +35,26 @@ function getCommand(file) {
 
     executeCommand(cmd[0], cmd[1]);
   });
+}
+
+function executeCommand(command, item) {
+  switch (command) {
+    case 'my-tweets':
+      displayTweets('rmoj99');
+      break;
+
+    case 'spotify-this-song':
+      getSong(item);
+      break;
+
+    case 'movie-this':
+      getMovie(item);
+      break;
+
+    default:
+      console.log('Unrecognized command.\n');
+      break;
+  }
 }
 
 function displayTweets(username) {
@@ -61,7 +81,6 @@ function getSong(song) {
   var spotify = new Spotify(keys.spotify);
 
   if (!song) {
-    console.log('No song selected');
     song = 'The Sign';
   }
 
@@ -100,16 +119,18 @@ function displaySong(track) {
 }
 
 function getMovie(movie) {
-  var request = require('request');
+  if (!movie) {
+    movie = 'Mr. Nobody';
+  }
 
   var queryURL = 'http://www.omdbapi.com/?apikey=trilogy&t=' + movie;
 
   request(queryURL, function(error, response, body) {
-    console.log('error:', error);
-    console.log('statusCode:', response && response.statusCode);
-    console.log(body);
-    console.log('body:' + JSON.stringify(JSON.parse(body), null, 2));
-    displayMovie(JSON.parse(body));
+    if (!error && response.statusCode === 200) {
+      displayMovie(JSON.parse(body));
+    } else {
+      console.log('error:', error);
+    }
   });
 }
 
@@ -117,28 +138,14 @@ function displayMovie(movie) {
   console.log('\nTitle: ' + movie.Title);
   console.log('Year: ' + movie.Year);
   console.log('IMDB Rating: ' + movie.imdbRating);
-  console.log('Rotten Tomatoes Rating: ' + movie.Ratings[1].Value);
+  if (movie.Ratings[1]) {
+    console.log('Rotten Tomatoes Rating: ' + movie.Ratings[1].Value);
+  } else {
+    console.log('Rotten Tomatoes Rating: N/A');
+  }
+
+  console.log('Country: ' + movie.Country);
   console.log('Language: ' + movie.Language);
   console.log('Plot: ' + movie.Plot);
   console.log('Actors: ' + movie.Actors + '\n');
-}
-
-function executeCommand(command, item) {
-  switch (command) {
-    case 'my-tweets':
-      displayTweets('rmoj99');
-      break;
-
-    case 'spotify-this-song':
-      getSong(item);
-      break;
-
-    case 'movie-this':
-      getMovie(item);
-      break;
-
-    default:
-      console.log('Unrecognized command.\n');
-      break;
-  }
 }
