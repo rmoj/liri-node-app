@@ -29,7 +29,7 @@ function main() {
       break;
 
     default:
-      console.log('Unrecognized command.');
+      console.log('Unrecognized command.\n');
       break;
   }
 }
@@ -44,52 +44,56 @@ function displayTweets(username) {
   ) {
     if (!error) {
       tweets.forEach(function(tweet) {
-        console.log(' ');
-        console.log('Created: ' + tweet.created_at);
+        console.log('\nCreated: ' + tweet.created_at);
         console.log('Tweet: ' + tweet.text);
       });
     } else {
       console.log(error);
     }
+    console.log('\n');
   });
 }
 
 function displaySong(song) {
   var spotify = new Spotify(keys.spotify);
 
+  if (!song) {
+    console.log('No song selected');
+    song = 'The Sign';
+  }
+
   spotify
     .search({ type: 'track', query: song })
     .then(function(response) {
-      // console.log(JSON.stringify(response, null, 4));
+      var items = response.tracks.items;
 
-      var spotData = response.tracks.items;
-      // console.log(Object.keys(songData[0]));
-
-      spotData.forEach(function(track) {
-        logSongData(track, song);
+      items.forEach(function(item) {
+        if (item.name.toLowerCase() === song.toLowerCase()) {
+          logSongData(item);
+        }
       });
+      console.log('\n');
     })
     .catch(function(err) {
-      console.log(err);
+      console.log(err + '\n');
     });
 }
-function logSongData(track, song) {
-  if (track.name === song) {
-    console.log('Song: ' + track.name);
-    console.log('Album: ' + track.album.name);
-    console.log('Preview: ' + track.preview_url);
-    var artists = track.artists;
-    var artistNames = '';
-    artists.forEach(function(artist) {
-      if (artistNames.length < 1 || artists.length == 1) {
-        artistNames = artistNames + artist.name;
-      } else {
-        artistNames = artisNames + ', ' + artist.name;
-      }
-    });
 
-    console.log(artistNames);
-  }
+function logSongData(track) {
+  var artists = track.artists;
+  var artistNames = '';
+
+  artists.forEach(function(artist) {
+    if (artistNames.length < 1 || artists.length == 1) {
+      artistNames = artistNames + artist.name;
+    } else {
+      artistNames = artistNames + ', ' + artist.name;
+    }
+  });
+  console.log('\nArtist(s): ' + artistNames);
+  console.log('Song: ' + track.name);
+  console.log('Preview: ' + track.preview_url);
+  console.log('Album: ' + track.album.name);
 }
 
 function displayMovie(movie) {}
